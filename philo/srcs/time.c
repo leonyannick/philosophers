@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/25 11:27:02 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/04/25 12:27:45 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/04/28 14:08:08 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,4 +32,23 @@ t_ms	get_time_elapsed(t_data *data)
 int	ms_sleep(t_ms ms)
 {
 	return (usleep(ms * 1000));
+}
+
+void	custom_sleep(t_ms sleep_time, t_philo *philo)
+{
+	struct timeval	tp;
+	t_ms			start;
+	t_ms			current;
+	
+	gettimeofday(&tp, NULL);
+	start = tp.tv_sec * 1000 + tp.tv_usec / 1000;
+	while (philo->data->still_alive)
+	{
+		gettimeofday(&tp, NULL);
+		current = tp.tv_sec * 1000 + tp.tv_usec / 1000;
+		if ((current - start) >= sleep_time)
+			return ;
+		if (get_time_elapsed(philo->data) > philo->death_time)
+			time_to_die();
+	}
 }
