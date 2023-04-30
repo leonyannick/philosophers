@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/19 11:42:54 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/04/28 16:42:28 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/04/30 21:09:28 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ typedef struct s_data
 {
 	int				nphilo;
 	int				nmeals;
-	pthread_mutex_t	*forks;
+	bool			*forks;
 	t_ms			start_time;
 	t_ms			time_to_die;
 	t_ms			time_to_eat;
@@ -53,6 +53,8 @@ typedef struct s_philo
 	int				meal_count;
 	t_ms			death_time;
 	pthread_mutex_t	fork_lock;
+	int				left_fork;
+	int				right_fork;
 	//index left fork: id - 1
 	//index right fork: ((id + 1) % nphilos) - 1
 	t_data			*data;
@@ -68,7 +70,7 @@ int		ft_atoi(const char *str);
 size_t	ft_strlen(const char *s);
 int		protected_printf(char *status, t_philo *philo);
 
-
+void	time_to_die(t_philo *philo);
 
 void	error_fatal(char *e_msg, t_data *data);
 

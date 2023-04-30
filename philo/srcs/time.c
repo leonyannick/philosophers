@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/25 11:27:02 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/04/28 14:08:08 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/04/30 21:10:23 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,6 @@ void	custom_sleep(t_ms sleep_time, t_philo *philo)
 		if ((current - start) >= sleep_time)
 			return ;
 		if (get_time_elapsed(philo->data) > philo->death_time)
-			time_to_die();
+			time_to_die(philo);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/19 11:52:40 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/04/28 16:25:00 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/04/30 21:37:33 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,9 @@ void	init_data(char **argv, int argc, t_data *data)
 		error_fatal("mutex_init printf_lock", data);
 	if (pthread_mutex_init(&data->death_status, NULL))
 		error_fatal("mutex_init death_lock", data);
-	data->forks = malloc(sizeof(pthread_mutex_t) * data->nphilo);
+	data->forks = malloc(sizeof(bool) * data->nphilo);
 	if (!data->forks)
-		error_fatal("malloc data->forks failed", data); 
+		error_fatal("malloc data->forks failed", data);
 }
 
 void	thinking(t_philo *philo)
@@ -72,10 +72,14 @@ void	eating(t_philo *philo)
 	
 	if (philo->data->still_alive)
 	{
-		new_death_time = get_time_elapsed(philo->data);
+		new_death_time = get_time_elapsed(philo->data) + philo->data->time_to_die;
 		protected_printf("is eating", philo);
 		custom_sleep(philo->data->time_to_eat, philo);
 		//unlock_forks
+		pthread_mutex_lock(&philo->fork_lock);
+		philo->data->forks[philo->left_fork] = true;
+		philo->data->forks[philo->right_fork] = true;
+		pthread_mutex_unlock(&philo->fork_lock);
 		philo->death_time = new_death_time;
 	}
 }
@@ -91,7 +95,20 @@ void	picking_forks(t_philo *philo)
 	{
 		if (get_time_elapsed(philo->data) > philo->death_time)
 			time_to_die(philo);
-		
+		pthread_mutex_lock(&philo->fork_lock);
+		if (philo->data->forks[philo->left_fork])
+		{
+			if (philo->data->forks[philo->right_fork])
+			{
+				philo->data->forks[philo->left_fork] = false;
+				philo->data->forks[philo->right_fork] = false;
+				pthread_mutex_unlock(&philo->fork_lock);
+				protected_printf("has taken a fork", philo);
+				protected_printf("has taken a fork", philo);
+				return ;
+			}
+		}
+		pthread_mutex_unlock(&philo->fork_lock);
 	}
 }
 
@@ -116,15 +133,15 @@ void	*philo_routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	printf("id: %d\n", philo->id);
 	
-	while (philo->data->still_alive)
-	{
-		picking_forks(philo);
-		eating(philo);
-		sleeping(philo);
-		thinking(philo);
-	}
+	// while (philo->data->still_alive)
+	// {
+	// 	picking_forks(philo);
+	// 	eating(philo);
+	// 	sleeping(philo);
+	// 	thinking(philo);
+	// }
+	printf("id: %d left fork: %d right fork: %d death time: %ld\n", philo->id, philo->left_fork, philo->right_fork, philo->death_time);
 	
 
 	return NULL;
@@ -133,10 +150,22 @@ void	*philo_routine(void *arg)
 void	create_philos(t_data *data, t_philo *philos)
 {
 	int		i;
+
+	
+
 	i = 0;
 	while (i < data->nphilo)
 	{
-		philos[i].id = i;
+		philos[i].id = i + 1;
+		philos[i].left_fork = i;
+		if (i == 0)
+			philos[i].right_fork = data->nphilo - 1;
+		else
+			philos[i].right_fork = i - 1;
+		philos[i].death_time = data->time_to_die;
+		data->forks[i] = true;
+		if (pthread_mutex_init(&philos[i].fork_lock, NULL))
+			error_fatal("mutex init fork lock", data);
 		if (pthread_create(&philos[i].tid, NULL, philo_routine, &philos[i]))
 			error_fatal("pthread_create", data);
 		i++;
@@ -159,12 +188,16 @@ int	main(int argc, char **argv)
 	t_data 	data;
 	t_philo	*philos;
 
-	// init_data(argv, argc, &data);
+	init_data(argv, argc, &data);
 	// memset(&data, 0, sizeof(t_data));
 	// data.nphilo = 3;
 	// philos = malloc(sizeof(t_philo) * 10);
-	// create_philos(&data, philos);
-	// join_threads(&data, philos);
+	philos = malloc(sizeof(t_philo) * data.nphilo);
+	if (!philos)
+		error_fatal("malloc philos array", &data);
+	
+	create_philos(&data, philos);
+	join_threads(&data, philos);
 
 
 	return (EXIT_SUCCESS);
