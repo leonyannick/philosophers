@@ -6,23 +6,23 @@
 #    By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/02/19 09:17:44 by lbaumann          #+#    #+#              #
-#    Updated: 2023/04/27 18:07:56 by lbaumann         ###   ########.fr        #
+#    Updated: 2023/05/02 16:17:31 by lbaumann         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 
-CC = cc -pthread
+CC = gcc -pthread
 CFLAGS = -Wall -Werror -Wextra
 
 UNAME := $(shell uname)
 
 ifeq ($(NOFLAGS), 1)
-CFLAGS =
+CFLAGS = 
 endif
 
 ifeq ($(DEBUG), 1)
-CFLAGS = -g
+CFLAGS = -fsanitize=thread -g
 all: fclean
 endif
 

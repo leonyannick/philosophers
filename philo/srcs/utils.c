@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/25 12:23:51 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/04/28 13:52:18 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/02 13:51:31 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,11 @@ int	protected_printf(char *status, t_philo *philo)
 	int	ret;
 	
 	pthread_mutex_lock(&philo->data->printf_lock);
-	ret = printf("%ld %d %s", get_time_elapsed(philo->data),
-			philo->id, status);
+	if (philo->data->still_alive)
+	{
+		ret = printf("%ld %d %s\n", get_time_elapsed(philo->data),
+				philo->id, status);
+	}
 	pthread_mutex_unlock(&philo->data->printf_lock);
 	return (ret);
 }
