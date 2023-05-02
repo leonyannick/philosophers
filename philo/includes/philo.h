@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/19 11:42:54 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/05/02 17:55:03 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/02 18:05:15 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,9 @@ typedef struct s_data
 	t_ms			time_to_eat;
 	t_ms			time_to_sleep;
 	pthread_mutex_t	printf_lock;
-	pthread_mutex_t	death_status;
+	pthread_mutex_t	status_lock;
 	pthread_mutex_t fork_lock;
-	bool			still_alive;
+	bool			valid_status;
 	struct timeval	tp;
 }	t_data;
 
@@ -53,11 +53,8 @@ typedef struct s_philo
 	pthread_t		tid;
 	int				meal_count;
 	t_ms			death_time;
-	// pthread_mutex_t	fork_lock;
 	int				left_fork;
 	int				right_fork;
-	//index left fork: id - 1
-	//index right fork: ((id + 1) % nphilos) + 1
 	t_data			*data;
 }	t_philo;
 

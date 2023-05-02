@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 17:31:06 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/05/02 17:48:50 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/02 18:28:40 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 */
 void	picking_forks(t_philo *philo)
 {
-	while (philo->data->still_alive)
+	while (philo->data->valid_status)
 	{
 		if (get_time_elapsed(philo->data) > philo->death_time)
 			time_to_die(philo);
@@ -42,7 +42,7 @@ void	picking_forks(t_philo *philo)
 
 void	eating(t_philo *philo)
 {
-	if (philo->data->still_alive)
+	if (philo->data->valid_status)
 	{
 		philo->death_time = get_time_elapsed(philo->data) + philo->data->time_to_die;
 		protected_printf("is eating", philo);
@@ -52,12 +52,13 @@ void	eating(t_philo *philo)
 		philo->data->forks[philo->left_fork] = true;
 		philo->data->forks[philo->right_fork] = true;
 		pthread_mutex_unlock(&philo->data->fork_lock);
+		philo->meal_count++;
 	}
 }
 
 void	sleeping(t_philo *philo)
 {
-	if (philo->data->still_alive)
+	if (philo->data->valid_status)
 	{
 		protected_printf("is sleeping", philo);
 		custom_sleep(philo->data->time_to_sleep, philo);	
@@ -66,7 +67,7 @@ void	sleeping(t_philo *philo)
 
 void	thinking(t_philo *philo)
 {
-	if (philo->data->still_alive)
+	if (philo->data->valid_status)
 		protected_printf("is thinking", philo);
 }
 
@@ -77,10 +78,10 @@ void	thinking(t_philo *philo)
 */
 void	time_to_die(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->data->death_status);
-	if (philo->data->still_alive)
-		printf("%ld %d %s\n", get_time_elapsed(philo->data), philo->id, "has died");
-	philo->data->still_alive = false;
-	pthread_mutex_unlock(&philo->data->death_status);
+	pthread_mutex_lock(&philo->data->status_lock);
+	if (philo->data->valid_status)
+		printf("%ld\t%d\t%s\n", get_time_elapsed(philo->data), philo->id, "has died");
+	philo->data->valid_status= false;
+	pthread_mutex_unlock(&philo->data->status_lock);
 	// protected_printf("has died", philo);
 }

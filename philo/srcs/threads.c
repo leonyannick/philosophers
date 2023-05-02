@@ -6,11 +6,19 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 17:34:43 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/05/02 17:54:14 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/02 18:34:48 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
+
+void	error_philo(char *msg, t_philo *philo)
+{
+	printf("%s\n", msg);
+	pthread_mutex_lock(&philo->data->status_lock);
+	philo->data->valid_status= false;
+	pthread_mutex_unlock(&philo->data->status_lock);
+}
 
 void	*philo_routine(void *arg)
 {
@@ -18,13 +26,14 @@ void	*philo_routine(void *arg)
 
 	philo = (t_philo *)arg;
 	
-	while (philo->data->still_alive)
+	while (philo->data->valid_status && (philo->meal_count != philo->data->nmeals))
 	{
 		picking_forks(philo);
 		eating(philo);
 		sleeping(philo);
 		thinking(philo);
 	}
+	free(philo);
 	//printf("current time: %ld id: %d left fork: %d right fork: %d death time: %ld\n", get_time_elapsed(philo->data), philo->id, philo->left_fork, philo->right_fork, philo->death_time);
 	
 
@@ -41,6 +50,7 @@ void	create_philos(t_data *data, t_philo *philos)
 		philos[i].id = i + 1;
 		philos[i].left_fork = i;
 		philos[i].data = data;
+		philos[i].meal_count = 0;
 		if (i == 0)
 			philos[i].right_fork = data->nphilo - 1;
 		else

@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/19 11:52:40 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/05/02 17:55:55 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/02 18:35:19 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,10 @@ void	init_data(char **argv, int argc, t_data *data)
 	data->start_time = data->tp.tv_sec * 1000 + data->tp.tv_usec / 1000;
 	if (pthread_mutex_init(&data->printf_lock, NULL))
 		error_fatal("mutex_init printf_lock", data);
-	if (pthread_mutex_init(&data->death_status, NULL))
+	if (pthread_mutex_init(&data->status_lock, NULL))
 		error_fatal("mutex_init death_lock", data);
 	data->forks = malloc(sizeof(bool) * data->nphilo);
+	data->valid_status = true;
 	if (!data->forks)
 		error_fatal("malloc data->forks failed", data);
 	if (pthread_mutex_init(&data->fork_lock, NULL))
@@ -71,6 +72,6 @@ int	main(int argc, char **argv)
 	
 	create_philos(&data, philos);
 	join_threads(&data, philos);
-
+	free(data.forks);
 	return (EXIT_SUCCESS);
 }
