@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/25 12:23:51 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/05/02 13:51:31 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/02 17:52:34 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,15 @@ int	ft_atoi(const char *str)
 	return (num);
 }
 
+int	ft_isdigit(int c)
+{
+	if (c <= '9' && c >= '0')
+	{
+		return (1);
+	}
+	return (0);
+}
+
 size_t	ft_strlen(const char *s)
 {
 	size_t	size;
@@ -49,6 +58,22 @@ size_t	ft_strlen(const char *s)
 		s++;
 	}
 	return (size);
+}
+
+int	check_valid_input(char *arg)
+{
+	int	i;
+
+	if (!arg)
+		return (-1);
+	i = 0;
+	while (arg[i])
+	{
+		if (!ft_isdigit(arg[i]))
+			error_fatal("arg contains char that is no digit", NULL);
+		i++;
+	}
+	return (ft_atoi(arg));
 }
 
 int	protected_printf(char *status, t_philo *philo)

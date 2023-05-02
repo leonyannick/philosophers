@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/19 11:42:54 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/05/02 14:00:25 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/02 17:55:03 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,9 +70,22 @@ void	custom_sleep(t_ms sleep_time, t_philo *philo);
 int		ft_atoi(const char *str);
 size_t	ft_strlen(const char *s);
 int		protected_printf(char *status, t_philo *philo);
+int		ft_isdigit(int c);
+int		check_valid_input(char *arg);
 
+//actions.c
+void	picking_forks(t_philo *philo);
+void	eating(t_philo *philo);
+void	sleeping(t_philo *philo);
+void	thinking(t_philo *philo);
 void	time_to_die(t_philo *philo);
 
+//threads.c
+void	*philo_routine(void *arg);
+void	create_philos(t_data *data, t_philo *philos);
+void	join_threads(t_data *data, t_philo *philos);
+
 void	error_fatal(char *e_msg, t_data *data);
+void	join_threads(t_data *data, t_philo *philos);
 
 #endif

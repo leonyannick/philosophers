@@ -6,7 +6,7 @@
 #    By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/02/19 09:17:44 by lbaumann          #+#    #+#              #
-#    Updated: 2023/05/02 16:17:31 by lbaumann         ###   ########.fr        #
+#    Updated: 2023/05/02 17:42:34 by lbaumann         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ CFLAGS =
 endif
 
 ifeq ($(DEBUG), 1)
-CFLAGS = -fsanitize=thread -g
+CFLAGS = -g
 all: fclean
 endif
 
@@ -43,6 +43,8 @@ SRCS = \
 	srcs/main.c \
 	srcs/time.c \
 	srcs/utils.c \
+	srcs/actions.c \
+	srcs/threads.c \
 
 ifeq ($(UNAME), Linux)
 endif
