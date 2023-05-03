@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 17:34:43 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/05/03 11:25:57 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/03 11:40:12 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	*philo_routine(void *arg)
 
 	philo = (t_philo *)arg;
 	
-	while (philo->data->valid_status && (philo->meal_count != philo->data->nmeals))
+	while (return_status(philo) && (philo->meal_count != philo->data->nmeals))
 	{
 		picking_forks(philo);
 		eating(philo);
@@ -71,6 +71,7 @@ void	create_philos(t_data *data, t_philo *philos)
 	i = 0;
 	while (i < data->nphilo)
 	{
+		gettimeofday(&data->tp, NULL);
 		if (pthread_create(&philos[i].tid, NULL, philo_routine, &philos[i]))
 			error_fatal("pthread_create", data);
 		i++;

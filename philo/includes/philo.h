@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/19 11:42:54 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/05/03 11:26:16 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/03 12:38:44 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,11 @@
 typedef long			t_ms;
 typedef struct s_philo	t_philo;
 
-// typedef struct s_fork
-// {
-// 	bool	is_taken;
-// }	t_fork;
+GR	= \033[32;1m
+RE	= \033[31;1m
+PU	= \033[35;1m
+BL	= \033[34;1m
+RC	= \033[0m
 
 typedef struct s_data
 {
