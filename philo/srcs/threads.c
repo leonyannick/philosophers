@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 17:34:43 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/05/02 18:34:48 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/03 10:38:20 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 
 void	error_philo(char *msg, t_philo *philo)
 {
-	printf("%s\n", msg);
 	pthread_mutex_lock(&philo->data->status_lock);
+	if (philo->data->valid_status)
+		printf("%s\n", msg);
 	philo->data->valid_status= false;
 	pthread_mutex_unlock(&philo->data->status_lock);
 }
@@ -33,7 +34,6 @@ void	*philo_routine(void *arg)
 		sleeping(philo);
 		thinking(philo);
 	}
-	free(philo);
 	//printf("current time: %ld id: %d left fork: %d right fork: %d death time: %ld\n", get_time_elapsed(philo->data), philo->id, philo->left_fork, philo->right_fork, philo->death_time);
 	
 
@@ -74,4 +74,5 @@ void	join_threads(t_data *data, t_philo *philos)
 			error_fatal("pthread_join", data);
 		i++;
 	}
+	free(philos);
 }

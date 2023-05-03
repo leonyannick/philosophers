@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 17:31:06 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/05/02 18:28:40 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/03 10:37:19 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,20 +23,23 @@ void	picking_forks(t_philo *philo)
 	{
 		if (get_time_elapsed(philo->data) > philo->death_time)
 			time_to_die(philo);
-		pthread_mutex_lock(&philo->data->fork_lock);
+		if (pthread_mutex_lock(&philo->data->fork_lock))
+			error_philo("pf fork_lock lock failed", philo);
 		if (philo->data->forks[philo->left_fork])
 		{
 			if (philo->data->forks[philo->right_fork])
 			{
 				philo->data->forks[philo->left_fork] = false;
 				philo->data->forks[philo->right_fork] = false;
-				pthread_mutex_unlock(&philo->data->fork_lock);
+				if (pthread_mutex_unlock(&philo->data->fork_lock))
+					error_philo("pf fork_lock unlock failed", philo);
 				protected_printf("has taken a fork", philo);
 				protected_printf("has taken a fork", philo);
 				return ;
 			}
 		}
-		pthread_mutex_unlock(&philo->data->fork_lock);
+		if (pthread_mutex_unlock(&philo->data->fork_lock))
+			error_philo("pf fork_lock unlock failed", philo);
 	}
 }
 
@@ -48,10 +51,12 @@ void	eating(t_philo *philo)
 		protected_printf("is eating", philo);
 		custom_sleep(philo->data->time_to_eat, philo);
 		//unlock_forks
-		pthread_mutex_lock(&philo->data->fork_lock);
+		if (pthread_mutex_lock(&philo->data->fork_lock))
+			error_philo("e fork_lock lock failed", philo);
 		philo->data->forks[philo->left_fork] = true;
 		philo->data->forks[philo->right_fork] = true;
-		pthread_mutex_unlock(&philo->data->fork_lock);
+		if (pthread_mutex_unlock(&philo->data->fork_lock))
+			error_philo("e fork_lock unlock failed", philo);
 		philo->meal_count++;
 	}
 }
@@ -78,10 +83,11 @@ void	thinking(t_philo *philo)
 */
 void	time_to_die(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->data->status_lock);
+	if (pthread_mutex_lock(&philo->data->status_lock))
+		error_philo("ttd status_lock lock failed", philo);
 	if (philo->data->valid_status)
 		printf("%ld\t%d\t%s\n", get_time_elapsed(philo->data), philo->id, "has died");
 	philo->data->valid_status= false;
-	pthread_mutex_unlock(&philo->data->status_lock);
-	// protected_printf("has died", philo);
+	if (pthread_mutex_unlock(&philo->data->status_lock))
+		error_philo("ttd status_lock unlock failed", philo);
 }
