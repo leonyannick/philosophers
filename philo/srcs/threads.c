@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 17:34:43 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/05/03 10:38:20 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/03 11:25:57 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,15 @@ void	error_philo(char *msg, t_philo *philo)
 		printf("%s\n", msg);
 	philo->data->valid_status= false;
 	pthread_mutex_unlock(&philo->data->status_lock);
+}
+
+bool	return_status(t_philo *philo)
+{
+	bool	status;
+	pthread_mutex_lock(&philo->data->status_lock);
+	status = philo->data->valid_status;
+	pthread_mutex_unlock(&philo->data->status_lock);
+	return (status);
 }
 
 void	*philo_routine(void *arg)
@@ -57,8 +66,11 @@ void	create_philos(t_data *data, t_philo *philos)
 			philos[i].right_fork = i - 1;
 		philos[i].death_time = data->time_to_die;
 		data->forks[i] = true;
-		// if (pthread_mutex_init(&philos[i].fork_lock, NULL))
-		// 	error_fatal("mutex init fork lock", data);
+		i++;
+	}
+	i = 0;
+	while (i < data->nphilo)
+	{
 		if (pthread_create(&philos[i].tid, NULL, philo_routine, &philos[i]))
 			error_fatal("pthread_create", data);
 		i++;

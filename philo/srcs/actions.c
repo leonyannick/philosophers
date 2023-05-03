@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 17:31:06 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/05/03 10:37:19 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/03 11:27:50 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 */
 void	picking_forks(t_philo *philo)
 {
-	while (philo->data->valid_status)
+	while (return_status(philo))
 	{
 		if (get_time_elapsed(philo->data) > philo->death_time)
 			time_to_die(philo);
@@ -45,7 +45,7 @@ void	picking_forks(t_philo *philo)
 
 void	eating(t_philo *philo)
 {
-	if (philo->data->valid_status)
+	if (return_status(philo))
 	{
 		philo->death_time = get_time_elapsed(philo->data) + philo->data->time_to_die;
 		protected_printf("is eating", philo);
@@ -63,7 +63,7 @@ void	eating(t_philo *philo)
 
 void	sleeping(t_philo *philo)
 {
-	if (philo->data->valid_status)
+	if (return_status(philo))
 	{
 		protected_printf("is sleeping", philo);
 		custom_sleep(philo->data->time_to_sleep, philo);	
@@ -72,7 +72,7 @@ void	sleeping(t_philo *philo)
 
 void	thinking(t_philo *philo)
 {
-	if (philo->data->valid_status)
+	if (return_status(philo))
 		protected_printf("is thinking", philo);
 }
 
@@ -87,7 +87,7 @@ void	time_to_die(t_philo *philo)
 		error_philo("ttd status_lock lock failed", philo);
 	if (philo->data->valid_status)
 		printf("%ld\t%d\t%s\n", get_time_elapsed(philo->data), philo->id, "has died");
-	philo->data->valid_status= false;
+	philo->data->valid_status = false;
 	if (pthread_mutex_unlock(&philo->data->status_lock))
 		error_philo("ttd status_lock unlock failed", philo);
 }
