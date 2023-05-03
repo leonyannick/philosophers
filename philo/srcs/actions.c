@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 17:31:06 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/05/03 12:47:20 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/03 13:14:22 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,10 @@ void	eating(t_philo *philo)
 {
 	if (return_status(philo))
 	{
-		philo->death_time = get_time_elapsed(philo->data) + philo->data->time_to_die;
+		philo->death_time = get_time_elapsed(philo->data)
+			+ philo->data->time_to_die;
 		protected_printf("is eating", GR, philo);
 		custom_sleep(philo->data->time_to_eat, philo);
-		//unlock_forks
 		if (pthread_mutex_lock(&philo->data->fork_lock))
 			error_philo("e fork_lock lock failed", philo);
 		philo->data->forks[philo->left_fork] = true;
@@ -66,7 +66,7 @@ void	sleeping(t_philo *philo)
 	if (return_status(philo))
 	{
 		protected_printf("is sleeping", BL, philo);
-		custom_sleep(philo->data->time_to_sleep, philo);	
+		custom_sleep(philo->data->time_to_sleep, philo);
 	}
 }
 
@@ -77,8 +77,8 @@ void	thinking(t_philo *philo)
 }
 
 /**
- * -lock death status and change still_alive to false -> so other philos are stopping
- * their respective routine
+ * -lock death status and change still_alive to false -> so other philos
+ * are stopping their respective routine
  * -print death message
 */
 void	time_to_die(t_philo *philo)
@@ -86,7 +86,8 @@ void	time_to_die(t_philo *philo)
 	if (pthread_mutex_lock(&philo->data->status_lock))
 		error_philo("ttd status_lock lock failed", philo);
 	if (philo->data->valid_status)
-		printf("%s%ld\t%d\t%s%s\n", RE, get_time_elapsed(philo->data), philo->id, "has died", RC);
+		printf("%s%ld %d %s%s\n", RE, get_time_elapsed(philo->data),
+			philo->id, "has died", RC);
 	philo->data->valid_status = false;
 	if (pthread_mutex_unlock(&philo->data->status_lock))
 		error_philo("ttd status_lock unlock failed", philo);

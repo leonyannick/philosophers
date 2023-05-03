@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/19 11:42:54 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/05/03 12:47:13 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/03 13:11:53 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ typedef struct s_data
 	t_ms			time_to_sleep;
 	pthread_mutex_t	printf_lock;
 	pthread_mutex_t	status_lock;
-	pthread_mutex_t fork_lock;
+	pthread_mutex_t	fork_lock;
 	bool			valid_status;
 	struct timeval	tp;
 }	t_data;
@@ -62,7 +62,6 @@ typedef struct s_philo
 
 //time.c
 t_ms	get_time_elapsed(t_data *data);
-int		ms_sleep(t_ms ms);
 void	custom_sleep(t_ms sleep_time, t_philo *philo);
 
 //utils.c
@@ -86,7 +85,9 @@ void	join_threads(t_data *data, t_philo *philos);
 bool	return_status(t_philo *philo);
 void	error_philo(char *msg, t_philo *philo);
 
+//main.c
+void	init_data(char **argv, int argc, t_data *data);
+void	usage(void);
 void	error_fatal(char *e_msg, t_data *data);
-void	join_threads(t_data *data, t_philo *philos);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/25 12:23:51 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/05/03 12:47:45 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/03 13:16:43 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,12 +79,13 @@ int	check_valid_input(char *arg)
 int	protected_printf(char *status, char *color, t_philo *philo)
 {
 	int	ret;
+
 	if (return_status(philo))
 	{
 		if (pthread_mutex_lock(&philo->data->printf_lock))
 			error_philo("printf_lock lock failed", philo);
-		ret = printf("%s%ld\t%d\t%s%s\n", color, get_time_elapsed(philo->data),
-			philo->id, status, RC);
+		ret = printf("%s%ld %d %s%s\n", color, get_time_elapsed(philo->data),
+				philo->id, status, RC);
 		if (pthread_mutex_unlock(&philo->data->printf_lock))
 			error_philo("printf_lock unlock failed", philo);
 	}

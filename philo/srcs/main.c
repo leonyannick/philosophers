@@ -6,30 +6,25 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/19 11:52:40 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/05/03 11:39:36 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/03 13:12:30 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-void	usage(void)
+int	main(int argc, char **argv)
 {
-	printf("Note: program needs at least 4 and maximum 5 parameters\n");
-	printf("./philo <number_of_philosophers> <time_to_die> <time_to_eat> ");
-	printf("<time_to_sleep> <[number_of_times_each_philosopher_must_eat]>\n");
-	exit(EXIT_SUCCESS);
-}
+	t_data	data;
+	t_philo	*philos;
 
-void	error_fatal(char *e_msg, t_data *data)
-{
-	if (data)
-	{
-		if (data->forks)
-			free(data->forks);
-	}
-	write(2, e_msg, ft_strlen(e_msg));
-	write(2, "\n", 1);
-	exit(errno);
+	init_data(argv, argc, &data);
+	philos = malloc(sizeof(t_philo) * data.nphilo);
+	if (!philos)
+		error_fatal("malloc philos array", &data);
+	create_philos(&data, philos);
+	join_threads(&data, philos);
+	free(data.forks);
+	return (EXIT_SUCCESS);
 }
 
 void	init_data(char **argv, int argc, t_data *data)
@@ -59,19 +54,22 @@ void	init_data(char **argv, int argc, t_data *data)
 		error_fatal("mutex_init fork_lock", data);
 }
 
-int	main(int argc, char **argv)
+void	usage(void)
 {
-	t_data 	data;
-	t_philo	*philos;
+	printf("Note: program needs at least 4 and maximum 5 parameters\n");
+	printf("./philo <number_of_philosophers> <time_to_die> <time_to_eat> ");
+	printf("<time_to_sleep> <[number_of_times_each_philosopher_must_eat]>\n");
+	exit(EXIT_SUCCESS);
+}
 
-	init_data(argv, argc, &data);
-	
-	philos = malloc(sizeof(t_philo) * data.nphilo);
-	if (!philos)
-		error_fatal("malloc philos array", &data);
-	
-	create_philos(&data, philos);
-	join_threads(&data, philos);
-	free(data.forks);
-	return (EXIT_SUCCESS);
+void	error_fatal(char *e_msg, t_data *data)
+{
+	if (data)
+	{
+		if (data->forks)
+			free(data->forks);
+	}
+	write(2, e_msg, ft_strlen(e_msg));
+	write(2, "\n", 1);
+	exit(errno);
 }

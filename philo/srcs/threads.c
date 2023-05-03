@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 17:34:43 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/05/03 11:40:12 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/03 13:16:00 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,14 @@ void	error_philo(char *msg, t_philo *philo)
 	pthread_mutex_lock(&philo->data->status_lock);
 	if (philo->data->valid_status)
 		printf("%s\n", msg);
-	philo->data->valid_status= false;
+	philo->data->valid_status = false;
 	pthread_mutex_unlock(&philo->data->status_lock);
 }
 
 bool	return_status(t_philo *philo)
 {
 	bool	status;
+
 	pthread_mutex_lock(&philo->data->status_lock);
 	status = philo->data->valid_status;
 	pthread_mutex_unlock(&philo->data->status_lock);
@@ -35,7 +36,6 @@ void	*philo_routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	
 	while (return_status(philo) && (philo->meal_count != philo->data->nmeals))
 	{
 		picking_forks(philo);
@@ -43,10 +43,7 @@ void	*philo_routine(void *arg)
 		sleeping(philo);
 		thinking(philo);
 	}
-	//printf("current time: %ld id: %d left fork: %d right fork: %d death time: %ld\n", get_time_elapsed(philo->data), philo->id, philo->left_fork, philo->right_fork, philo->death_time);
-	
-
-	return NULL;
+	return (NULL);
 }
 
 void	create_philos(t_data *data, t_philo *philos)
@@ -80,12 +77,14 @@ void	create_philos(t_data *data, t_philo *philos)
 
 void	join_threads(t_data *data, t_philo *philos)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
 	while (i < data->nphilo)
 	{
 		if (pthread_join(philos[i].tid, NULL))
 			error_fatal("pthread_join", data);
 		i++;
 	}
-	free(philos);
+	free (philos);
 }
