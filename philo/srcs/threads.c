@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 17:34:43 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/05/03 13:16:00 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/03 16:30:30 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,17 @@ void	error_philo(char *msg, t_philo *philo)
 	pthread_mutex_unlock(&philo->data->status_lock);
 }
 
-bool	return_status(t_philo *philo)
+bool	check_change_status(t_philo *philo, bool change)
 {
 	bool	status;
 
-	pthread_mutex_lock(&philo->data->status_lock);
+	if (pthread_mutex_lock(&philo->data->status_lock))
+		error_philo("ttd status_lock lock failed", philo);
 	status = philo->data->valid_status;
-	pthread_mutex_unlock(&philo->data->status_lock);
+	if (change && status)
+		philo->data->valid_status = false;
+	if (pthread_mutex_unlock(&philo->data->status_lock))
+		error_philo("ttd status_lock unlock failed", philo);
 	return (status);
 }
 
@@ -36,7 +40,8 @@ void	*philo_routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	while (return_status(philo) && (philo->meal_count != philo->data->nmeals))
+	while (check_change_status(philo, false)
+		&& (philo->meal_count != philo->data->nmeals))
 	{
 		picking_forks(philo);
 		eating(philo);

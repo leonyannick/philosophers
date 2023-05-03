@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 17:31:06 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/05/03 13:14:22 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/03 16:28:56 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 */
 void	picking_forks(t_philo *philo)
 {
-	while (return_status(philo))
+	while (check_change_status(philo, false))
 	{
 		if (get_time_elapsed(philo->data) > philo->death_time)
 			time_to_die(philo);
@@ -45,7 +45,7 @@ void	picking_forks(t_philo *philo)
 
 void	eating(t_philo *philo)
 {
-	if (return_status(philo))
+	if (check_change_status(philo, false))
 	{
 		philo->death_time = get_time_elapsed(philo->data)
 			+ philo->data->time_to_die;
@@ -63,7 +63,7 @@ void	eating(t_philo *philo)
 
 void	sleeping(t_philo *philo)
 {
-	if (return_status(philo))
+	if (check_change_status(philo, false))
 	{
 		protected_printf("is sleeping", BL, philo);
 		custom_sleep(philo->data->time_to_sleep, philo);
@@ -72,7 +72,7 @@ void	sleeping(t_philo *philo)
 
 void	thinking(t_philo *philo)
 {
-	if (return_status(philo))
+	if (check_change_status(philo, false))
 		protected_printf("is thinking", PU, philo);
 }
 
@@ -83,12 +83,13 @@ void	thinking(t_philo *philo)
 */
 void	time_to_die(t_philo *philo)
 {
-	if (pthread_mutex_lock(&philo->data->status_lock))
-		error_philo("ttd status_lock lock failed", philo);
-	if (philo->data->valid_status)
+	if (check_change_status(philo, true))
+	{
+		if (pthread_mutex_lock(&philo->data->printf_lock))
+			error_philo("printf_lock lock failed", philo);
 		printf("%s%ld %d %s%s\n", RE, get_time_elapsed(philo->data),
 			philo->id, "has died", RC);
-	philo->data->valid_status = false;
-	if (pthread_mutex_unlock(&philo->data->status_lock))
-		error_philo("ttd status_lock unlock failed", philo);
+		if (pthread_mutex_unlock(&philo->data->printf_lock))
+			error_philo("printf_lock lock failed", philo);
+	}
 }

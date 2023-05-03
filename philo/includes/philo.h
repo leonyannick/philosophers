@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/19 11:42:54 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/05/03 13:11:53 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/03 16:28:35 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void	time_to_die(t_philo *philo);
 void	*philo_routine(void *arg);
 void	create_philos(t_data *data, t_philo *philos);
 void	join_threads(t_data *data, t_philo *philos);
-bool	return_status(t_philo *philo);
+bool	check_change_status(t_philo *philo, bool change);
 void	error_philo(char *msg, t_philo *philo);
 
 //main.c
