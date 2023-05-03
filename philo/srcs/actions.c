@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 17:31:06 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/05/03 11:27:50 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/03 12:47:20 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ void	picking_forks(t_philo *philo)
 				philo->data->forks[philo->right_fork] = false;
 				if (pthread_mutex_unlock(&philo->data->fork_lock))
 					error_philo("pf fork_lock unlock failed", philo);
-				protected_printf("has taken a fork", philo);
-				protected_printf("has taken a fork", philo);
+				protected_printf("has taken a fork", YE, philo);
+				protected_printf("has taken a fork", YE, philo);
 				return ;
 			}
 		}
@@ -48,7 +48,7 @@ void	eating(t_philo *philo)
 	if (return_status(philo))
 	{
 		philo->death_time = get_time_elapsed(philo->data) + philo->data->time_to_die;
-		protected_printf("is eating", philo);
+		protected_printf("is eating", GR, philo);
 		custom_sleep(philo->data->time_to_eat, philo);
 		//unlock_forks
 		if (pthread_mutex_lock(&philo->data->fork_lock))
@@ -65,7 +65,7 @@ void	sleeping(t_philo *philo)
 {
 	if (return_status(philo))
 	{
-		protected_printf("is sleeping", philo);
+		protected_printf("is sleeping", BL, philo);
 		custom_sleep(philo->data->time_to_sleep, philo);	
 	}
 }
@@ -73,7 +73,7 @@ void	sleeping(t_philo *philo)
 void	thinking(t_philo *philo)
 {
 	if (return_status(philo))
-		protected_printf("is thinking", philo);
+		protected_printf("is thinking", PU, philo);
 }
 
 /**
@@ -86,7 +86,7 @@ void	time_to_die(t_philo *philo)
 	if (pthread_mutex_lock(&philo->data->status_lock))
 		error_philo("ttd status_lock lock failed", philo);
 	if (philo->data->valid_status)
-		printf("%ld\t%d\t%s\n", get_time_elapsed(philo->data), philo->id, "has died");
+		printf("%s%ld\t%d\t%s%s\n", RE, get_time_elapsed(philo->data), philo->id, "has died", RC);
 	philo->data->valid_status = false;
 	if (pthread_mutex_unlock(&philo->data->status_lock))
 		error_philo("ttd status_lock unlock failed", philo);

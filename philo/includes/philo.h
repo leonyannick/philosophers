@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/19 11:42:54 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/05/03 12:38:44 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/03 12:47:13 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,12 @@
 typedef long			t_ms;
 typedef struct s_philo	t_philo;
 
-GR	= \033[32;1m
-RE	= \033[31;1m
-PU	= \033[35;1m
-BL	= \033[34;1m
-RC	= \033[0m
+# define GR	"\033[32;1m"
+# define RE	"\033[31;1m"
+# define PU	"\033[35;1m"
+# define BL	"\033[34;1m"
+# define YE "\033[33;1m"
+# define RC "\033[0m"
 
 typedef struct s_data
 {
@@ -67,7 +68,7 @@ void	custom_sleep(t_ms sleep_time, t_philo *philo);
 //utils.c
 int		ft_atoi(const char *str);
 size_t	ft_strlen(const char *s);
-int		protected_printf(char *status, t_philo *philo);
+int		protected_printf(char *status, char *color, t_philo *philo);
 int		ft_isdigit(int c);
 int		check_valid_input(char *arg);
 
