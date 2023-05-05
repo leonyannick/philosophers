@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 17:31:06 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/05/05 11:24:24 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/05 11:56:51 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ void	time_to_die(t_philo *philo)
 		if (pthread_mutex_lock(&philo->data->printf_lock))
 			error_philo("printf_lock lock failed", philo);
 		printf("%s%ld %d %s%s\n", RE, get_time_elapsed(philo->data),
-			philo->id, "has died", RC);
+			philo->id, "died", RC);
 		if (pthread_mutex_unlock(&philo->data->printf_lock))
 			error_philo("printf_lock lock failed", philo);
 	}
