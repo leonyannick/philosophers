@@ -6,7 +6,7 @@
 #    By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/02/19 09:17:44 by lbaumann          #+#    #+#              #
-#    Updated: 2023/05/03 16:49:48 by lbaumann         ###   ########.fr        #
+#    Updated: 2023/05/03 20:08:35 by lbaumann         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ CFLAGS =
 endif
 
 ifeq ($(DEBUG), 1)
-CFLAGS = -g -Wall -Werror -Wextra
+CFLAGS = -g -fsanitize=thread -Wall -Werror -Wextra
 all: fclean
 endif
 

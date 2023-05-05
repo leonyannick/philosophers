@@ -6,12 +6,16 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 17:34:43 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/05/03 16:30:30 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/05 11:19:52 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
+/**
+ * change the valid_status to false, so other threads are exiting aswell
+ * print out msg indicating what went wrong for debugging
+*/
 void	error_philo(char *msg, t_philo *philo)
 {
 	pthread_mutex_lock(&philo->data->status_lock);
@@ -21,6 +25,10 @@ void	error_philo(char *msg, t_philo *philo)
 	pthread_mutex_unlock(&philo->data->status_lock);
 }
 
+/**
+ * @param change if is true, the status is changed to false
+ * @return the current status of valid_status
+*/
 bool	check_change_status(t_philo *philo, bool change)
 {
 	bool	status;
@@ -35,11 +43,25 @@ bool	check_change_status(t_philo *philo, bool change)
 	return (status);
 }
 
+/**
+ * function that every thread is calling
+ * exception if there is only one philosopher -> starves to death
+ * normal behaviour: infinite routine loop (as long as valid_status=true)
+ * eating, sleeping, thinking
+ * @param arg expects a pointer to a philo struct to identify
+ * each distinct philosopher
+*/
 void	*philo_routine(void *arg)
 {
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
+	if (philo->data->nphilo == 1)
+	{
+		protected_printf("has taken a fork", YE, philo);
+		custom_sleep(philo->data->time_to_die + 100, philo);
+		return (NULL);
+	}
 	while (check_change_status(philo, false)
 		&& (philo->meal_count != philo->data->nmeals))
 	{
@@ -51,6 +73,13 @@ void	*philo_routine(void *arg)
 	return (NULL);
 }
 
+/**
+ * -meal_count initialized to 0
+ * -left and right fork id are assigned
+ * -first philosopher has right fork of last philosopher
+ * -fork states are set to true -> fork available
+ * -threads are created and passed the respective t_philo struct
+*/
 void	create_philos(t_data *data, t_philo *philos)
 {
 	int		i;
@@ -73,13 +102,16 @@ void	create_philos(t_data *data, t_philo *philos)
 	i = 0;
 	while (i < data->nphilo)
 	{
-		gettimeofday(&data->tp, NULL);
 		if (pthread_create(&philos[i].tid, NULL, philo_routine, &philos[i]))
-			error_fatal("pthread_create", data);
+			error_fatal("pthread_create", data, philos);
 		i++;
 	}
 }
 
+/**
+ * waits for threads to return
+ * free 2 allocations in the end
+*/
 void	join_threads(t_data *data, t_philo *philos)
 {
 	int	i;
@@ -88,8 +120,9 @@ void	join_threads(t_data *data, t_philo *philos)
 	while (i < data->nphilo)
 	{
 		if (pthread_join(philos[i].tid, NULL))
-			error_fatal("pthread_join", data);
+			error_fatal("pthread_join", data, philos);
 		i++;
 	}
 	free (philos);
+	free (data->forks);
 }

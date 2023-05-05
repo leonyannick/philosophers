@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/25 12:23:51 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/05/03 16:52:57 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/05 11:26:22 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,10 @@ size_t	ft_strlen(const char *s)
 	return (size);
 }
 
+/**
+ * checks if arg contains only digits and returns an integer from atoi
+ * @param arg argument from argv
+*/
 int	check_valid_input(char *arg)
 {
 	int	i;
@@ -70,12 +74,16 @@ int	check_valid_input(char *arg)
 	while (arg[i])
 	{
 		if (!ft_isdigit(arg[i]))
-			error_fatal("arg contains char that is no digit", NULL);
+			error_fatal("arg contains char that is no digit", NULL, NULL);
 		i++;
 	}
 	return (ft_atoi(arg));
 }
 
+/**
+ * mutex wrapper around printf, so that status messages are not mixed up
+ * while printing
+*/
 int	protected_printf(char *status, char *color, t_philo *philo)
 {
 	int	ret;
