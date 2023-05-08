@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 17:31:06 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/05/05 11:56:51 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/05/08 10:35:17 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,8 @@ void	eating(t_philo *philo)
 */
 void	sleeping(t_philo *philo)
 {
-	if (check_change_status(philo, false))
+	if (check_change_status(philo, false)
+		&& (philo->meal_count != philo->data->nmeals))
 	{
 		protected_printf("is sleeping", BL, philo);
 		custom_sleep(philo->data->time_to_sleep, philo);
@@ -85,7 +86,8 @@ void	sleeping(t_philo *philo)
 */
 void	thinking(t_philo *philo)
 {
-	if (check_change_status(philo, false))
+	if (check_change_status(philo, false)
+		&& (philo->meal_count != philo->data->nmeals))
 		protected_printf("is thinking", PU, philo);
 }
 
