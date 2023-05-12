@@ -1,4 +1,4 @@
-# pipex - a 42 project
+# philosophers - a 42 project
 
 ## Description
 This project is about multithreading. There is a table of n philosophers (1 philospher = 1 thread) that share a common routine (eating, sleeping, thinking). 
